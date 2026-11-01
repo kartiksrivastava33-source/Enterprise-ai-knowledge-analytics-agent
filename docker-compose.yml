@@ -1,0 +1,23 @@
+
+services:
+  backend:
+    build: .
+    container_name: enterprise-ai-backend
+    command: uvicorn app:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./enterprise_memory.db:/app/enterprise_memory.db
+      - ./data/vector_db:/app/data/vector_db
+      - ./data/sales_data.csv:/app/data/sales_data.csv
+
+  frontend:
+    build: .
+    container_name: enterprise-ai-frontend
+    command: streamlit run frontend.py --server.address 0.0.0.0 --server.port 8501
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
